@@ -76,8 +76,13 @@ var DbOpt = {
         if(shortid.isValid(targetId)){
             var conditions = {_id : targetId};
             req.body.updateDate = new Date();
-            var update = {$set : req.body};
+            //var update = {$set : req.body};
+            var update = req.body;
+            delete update._id;
+            console.log(update);
+            console.log(conditions);
             obj.update(conditions, update, function (err,result) {
+                console.log(err);
                 if(err){
                     res.end(err);
                 }else{
@@ -170,6 +175,7 @@ var DbOpt = {
             Str = order.split('_');
             A = Str[0]; B = Str[1];
             sq[A] = B;    //关联数组增加查询条件，更加灵活，因为A是变量
+            sq.date = -1;
         } else {
             sq.date = -1;    //默认排序查询条件
         }
@@ -214,6 +220,27 @@ var DbOpt = {
         }
         if(!limit){
             return obj.find(q).sort(sq);
+        }else{
+            return obj.find(q).sort(sq).skip(0).limit(limit);
+        }
+
+
+    },
+    
+      getTheNewDatasByParam : function(obj,req,res,q){// 通用查询list不带分页，注意参数传递格式,通过express-promise去掉了回调方式返回数据
+//        默认查询所有记录，有条件顺带排序和查询部分记录
+        var order = req.query.order;
+        var limit = parseInt(req.query.limit);
+        var sq = {}, Str, A = 'problemID', B = 'asc';
+        if (order) {    //是否有排序请求
+            Str = order.split('_');
+            A = Str[0]; B = Str[1];
+            sq[A] = B;    //关联数组增加查询条件，更加灵活，因为A是变量
+        } else {
+            sq.date = -1;    //默认排序查询条件
+        }
+        if(!limit){
+            return obj.find(q).sort(sq).limit(1);
         }else{
             return obj.find(q).sort(sq).skip(0).limit(limit);
         }

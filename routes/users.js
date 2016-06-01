@@ -10,6 +10,8 @@ var User = require("../models/User");
 var AdminUser = require("../models/AdminUser");
 //留言实体类
 var Message = require("../models/Message");
+//功课实体类
+var Course = require("../models/Course");
 // 文档对象
 var Content = require("../models/Content");
 //数据库操作对象
@@ -273,6 +275,17 @@ var returnUsersRouter = function(io) {
     router.get('/userMessage', function(req, res, next) {
         if(isLogined(req)){
             siteFunc.renderToTargetPageByType(req,res,'userNotice',{title : '我的消息',page : 'userMessage'});
+        }
+        else{
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
+        }
+
+    });
+    
+    //用户消息
+    router.get('/userCourse', function(req, res, next) {
+        if(isLogined(req)){
+            siteFunc.renderToTargetPageByType(req,res,'userCourse',{title : '我的功课',page : 'userCourse'});
         }
         else{
             siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
@@ -546,6 +559,67 @@ var returnUsersRouter = function(io) {
 
 //-------------------------------------留言模块结束
 
+//-------------------------------------功课模块开始
+// 功课上报
+    router.post('/course/sent', function(req, res, next) {
+
+        var errors;
+        var authorId = req.session.user._id;
+        var authorName = req.session.user.name;
+        var contents = req.body.contents;
+        var courses = req.body.courses;
+               
+        if(!contents){
+            errors = settings.system_illegal_param;
+        }
+        if(!authorId || !authorName){
+            errors = settings.system_illegal_param;
+        }       
+        if(!courses){
+            errors = settings.system_illegal_param;
+        }
+        if(errors){
+            res.end(errors);
+        }else{
+            console.log(req.body);
+            var newCourse = new Course({
+                authorId:authorId,
+                authorName:authorName,
+                courses:eval(req.body.courses),
+                // [{
+                // "contentTagsId":"SJEQFhgm","contentTagesTitle":"法华经","todayNum":"1"
+                // },{
+                // "contentTagsId":"SJEQFhgm","contentTagesTitle":"法华经","todayNum":"1"
+                // }],
+                contents:req.body.contents
+            });
+            newCourse.save(function(){
+                    res.end("success");
+                });
+        }
+        
+//         db.courses.save(
+// {
+// authorId:"BJlsjKrDM",
+// authorName:"胡云",
+// contents:"11111111111111",
+// course:[
+// {
+// "contentTagsId":"SJEQFhgm","contentTagesTitle":"法华经","todayNum":"1"
+// },
+// {
+// "contentTagsId":"SJEQFhgm","contentTagesTitle":"法华经","todayNum":"1"
+// }]
+// })
+    });
+    
+    //功课统计列表
+    router.get('/courseCount',function(req,res){
+        DbOpt.findAll(Course,req,res,"request course");      
+    });
+
+
+//-------------------------------------功课模块结束
 
 //-------------------------------------消息通知模块开始
     router.get('/userNotify/setHasRead',function(req,res){

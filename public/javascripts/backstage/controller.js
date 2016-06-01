@@ -887,7 +887,7 @@ doraApp.controller("messageList",['$scope','$http','pageData','getItemService',f
     initPagination($scope,$http);
     //删除留言
     $scope.delMsgsItem = function(id){
-        initCheckIfDo($scope,id,'您确认要删除该条留言吗？',function(currentID){
+        initCheckIfDo($scope,id,'您确认要删除该条功课吗？',function(currentID){
             angularHttpGet($http,"/admin/manage/"+pageData.bigCategory+"/del?uid="+currentID,function(){
                 initPagination($scope,$http);
             });

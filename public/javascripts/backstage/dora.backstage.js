@@ -383,7 +383,7 @@ function setAdminPowerTreeData(){
         { id:'contentManage_temp_2_view', pId:'contentManage_temp_2', name:"查看"},
         { id:'contentManage_temp_2_modify', pId:'contentManage_temp_2', name:"修改"},
 
-        { id:'contentManage_msg', pId:'contentManage', name:"留言管理", open:true},
+        { id:'contentManage_msg', pId:'contentManage', name:"功课管理", open:true},
         { id:'contentManage_msg_view', pId:'contentManage_msg', name:"查看"},
         { id:'contentManage_msg_add', pId:'contentManage_msg', name:"回复"},
         { id:'contentManage_msg_del', pId:'contentManage_msg', name:"删除"},

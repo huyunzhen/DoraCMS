@@ -1,0 +1,70 @@
+<!--功课模块-->
+<script src="/javascripts/angular.min.js"></script>
+<%if(logined){%>
+<input type="hidden" value="<%=userInfo._id%>" id="uid"/>
+<%}%>
+<div class="courseBoard" ng-app="webApp" ng-controller="courseBoard">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 giveMsg">
+            <h3>添加功课</h3>
+            <form ole="form" class="form-inline" name="courseForm" ng-submit="sentCourseForm(CourseForm.$valid)" novalidate>
+                <%tagsData.forEach(function(item){%>
+                <div class="input-group course">
+                    <span class="input-group-addon contentTagName"><%=item.name%></span>
+                    <input type="number" class="form-control todayNum" placeholder="今日念诵">
+                    <span class="input-group-addon contentTagId" data-id="<%=item._id%>">次数</span>
+                </div>
+                <%})%>
+                <textarea rows="3" placeholder="回向文" class="form-control" name="contents" id="msgTextArea" ng-model="CourseFormData.contents"  ng-minlength="10" ng-maxlength="500" required></textarea>
+                <label for="inputError" class="control-label text-danger" ng-show="CourseForm.content.$invalid && !CourseForm.content.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 10-500个非特殊字符</label>
+                <p class="sent-btn">
+                <button class="btn btn-primary theme-btn pull-right"  ng-disabled="CourseForm.$invalid">功课上报</button>
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var doraApp = angular.module("webApp",[]);
+    doraApp.controller('courseBoard',function($scope,$http){
+
+                $scope.CourseFormData = {};
+                var loginState = '<%=logined%>';              
+              
+                $scope.sentCourseForm = function(isValid){
+                    var courses = new Array();
+                    $(".course").each(function(i){
+                        var course = {
+                            "contentTagsId":$(this).children(".contentTagId").attr("data-id"),
+                            "contentTagsTitle":$(this).children(".contentTagName").text(),
+                            "todayNum":$(this).children(".todayNum").val()
+                        }
+                        courses.push(course);
+                    });
+                    
+                    $scope.CourseFormData.courses = JSON.stringify(courses);
+                    if(!loginState){
+                        alert('请先登录!');
+                        window.location = '/users/login';
+                    }else{
+                        $http({
+                            method  : 'POST',
+                            url     : '/users/course/sent',
+                            data    : $.param($scope.CourseFormData),  // pass in data as strings
+                            headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+                        })
+                        .success(function(data) {
+                            if(data === "success"){
+                                window.location.reload();
+                            }else{
+                                alert(data);
+                            }
+                        });
+                    }
+
+                };
+     });
+
+</script>

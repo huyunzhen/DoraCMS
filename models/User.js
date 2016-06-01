@@ -15,19 +15,19 @@ var UserSchema = new Schema({
     userName : String,
     password:   String,
     email : String,
-    qq : Number,
-    phoneNum : Number,
-    comments : { type: String, default: "这个人很懒，什么都没有留下..." },
-    position : String, // 职位
-    company : String,  // 大学或公司
+    qq : Number, //微信号
+    phoneNum : Number,//手机号
+    comments : { type: String, default: "请介绍一下自己的修行..." },
+    position : String, //是否皈依
+    company : String,  // 依止师父
     website : String, // 个人站点
     date: { type: Date, default: Date.now },
     logo: { type: String, default: "/upload/images/defaultlogo.png" },
     group: { type: String, default: "0" },
-    gender : String,
-    province : String, // 所在省份
+    gender : String,//是否出家
+    province : String, // 微信号
     city : String, // 所在城市
-    year : Number, // 出生年
+    year : Number, // 学佛时间
     openid : String,   // 针对qq互联
     retrieve_time : {type: Number} // 用户发送激活请求的时间
 

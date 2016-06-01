@@ -23,7 +23,7 @@ var cache = require('../util/cache');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-
+    
     siteFunc.renderToTargetPageByType(req,res,'index');
 
 });

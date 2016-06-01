@@ -15,7 +15,8 @@ var Ads = require("../Ads");
 //留言对象
 var Message = require("../Message");
 var settings = require("./settings");
-
+//课程对象
+var Course = require("../Course");
 //数据库操作对象
 var DbOpt = require("../Dbopt");
 //消息对象
@@ -103,7 +104,7 @@ var siteFunc = {
     },
 
     getCategoryList: function () {
-        return ContentCategory.find({'parentID': '0', 'state': '1'}, 'name defaultUrl').sort({'sortId': 1}).find();
+        return ContentCategory.find({'state': '1'}, '_id name defaultUrl parentID').sort({'sortId': 1}).find();
     },
 
     getHotItemListData: function (q) {
@@ -125,7 +126,9 @@ var siteFunc = {
     getMessageList : function(contentId){
         return Message.find({'contentId' : contentId}).sort({'date': 1}).populate('author').populate('replyAuthor').populate('adminAuthor').exec();
     },
-
+    getCourseList : function(){
+        return  Course.find().sort({'data':1});       
+    },
     sendSystemNoticeByType : function(req,res,type,value){
         var noticeObj;
         if(type == 'reg'){
@@ -140,8 +143,8 @@ var siteFunc = {
             noticeObj = {
                 type : '2',
                 sender : value.author,
-                title : '用户留言提醒',
-                content : '用户 ' + value.author.userName + ' 给您留言啦！',
+                title : '用户功课提醒',
+                content : '用户 ' + value.author.userName + ' 上报功课啦！',
                 action : type
             };
         }
@@ -152,6 +155,7 @@ var siteFunc = {
 
     setDataForIndex: function (req, res, params ,staticforder, defaultTempPath) {
         var requireField = 'title date commentNum discription clickNum isTop sImg tags';
+        req.query.order = 'isTop_desc';
         var documentList = DbOpt.getPaginationResult(Content, req, res, params, requireField);
         var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
         return {
@@ -207,7 +211,7 @@ var siteFunc = {
 
     setDetailInfo: function (req, res, params ,staticforder, defaultTempPath) {
         var currentCateList = ContentCategory.find(params.cateQuery).sort({'sortId': 1});
-        //var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
+        var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
         return {
             siteConfig: this.siteInfos(params.detail.title, params.detail.discription, params.detail.keywords),
             cateTypes: this.getCategoryList(),
@@ -219,6 +223,7 @@ var siteFunc = {
             documentInfo: params.detail,
             messageList : this.getMessageList(params.detail._id),
             pageType: 'detail',
+            tagsData: tagsData,
             logined: isLogined(req),
             staticforder : staticforder,
             layout: defaultTempPath
@@ -294,7 +299,21 @@ var siteFunc = {
             layout: defaultTempPath
         }
     },
-
+    setDataForUserCourse: function (req, res, params, staticforder, defaultTempPath) {
+        req.query.limit = 10;
+        var documentList =  DbOpt.getPaginationResult(Course, req, res, {'authorId' :  req.session.user._id});
+        // getPaginationResult(Course, req, res, {'author' :  req.session.user._id});
+        var tagsData = DbOpt.getDatasByParam(ContentTags, req, res, {});
+        return {
+            siteConfig: this.siteInfos(params.title),
+            cateTypes: this.getCategoryList(),
+            tagsData: tagsData,
+            userInfo: req.session.user,
+            userCourseListData : documentList.docs,
+            staticforder : staticforder,
+            layout: defaultTempPath
+        }
+    },
     setDataForInfo : function(params, staticforder, defaultTempPath){
 
         return {
@@ -468,6 +487,9 @@ var siteFunc = {
                 }else if(type == 'userNotice'){
                     targetPath = settings.SYSTEMTEMPFORDER + temp.alias + '/users/' + params.page;
                     res.render(targetPath, siteFunc.setDataForUserNotice(req, res, params, temp.alias, defaultTempPath));
+                }else if(type == 'userCourse'){
+                    targetPath = settings.SYSTEMTEMPFORDER + temp.alias + '/users/' + params.page;
+                    res.render(targetPath, siteFunc.setDataForUserCourse(req, res, params, temp.alias, defaultTempPath));
                 }else if(type == 'userInfo'){
                     targetPath = settings.SYSTEMTEMPFORDER + temp.alias + '/users/' + params.page;
                     res.render(targetPath, siteFunc.setDataForInfo(params, temp.alias, defaultTempPath));

@@ -61,7 +61,7 @@ var system = {
 //                发送邮件
         var transporter = nodemailer.createTransport({
 
-            service: 'QQ',
+            service: '126',
             auth: {
                 user: settings.site_email,
                 pass: settings.site_email_psd
