@@ -1,9 +1,11 @@
 <div class="table-responsive">
-  <table class="table">
+<%if(newCourseData.length!=0 ){%>
+  <table class="table table-bordered table-condensed">
     <tr>
         <th>日期</th>
-        <%tagsData.forEach(function(item){%>
-        <th><%=item.name%></th>
+        <%newCourseData[0].courses.forEach(function(item){%>
+        <th><%=item.contentTagsTitle%><br/>当日数量</th>
+        <th><%=item.contentTagsTitle%><br/>累计数量</th>
         <%})%>
         <th>回向文</th>
     </tr>
@@ -14,12 +16,14 @@
         <td class=""><%=myDateFormat(items.date)%></td>
         <%items.courses.forEach(function(item){%>
         <td><%=item.todayNum%></td>
+        <td><%=item.totalNum%></td>
         <%})%>
         <td class=" "><%=items.contents%></td>
     </tr>
     <%})%>
     
   </table>
+ <%}%>
 </div>
 <script>
     /*targetID:全局对应指定记录的标记，在修改和删除时使用*/

@@ -7,14 +7,26 @@
     <div class="row">
         <div class="col-md-12 col-sm-12 giveMsg">
             <h3>添加功课</h3>
-            <form ole="form" class="form-inline" name="courseForm" ng-submit="sentCourseForm(CourseForm.$valid)" novalidate>
-                <%tagsData.forEach(function(item){%>
-                <div class="input-group course">
-                    <span class="input-group-addon contentTagName"><%=item.name%></span>
-                    <input type="number" class="form-control todayNum" placeholder="今日念诵">
-                    <span class="input-group-addon contentTagId" data-id="<%=item._id%>">次数</span>
-                </div>
-                <%})%>
+            <form role="form" class="form-inline" name="courseForm" ng-submit="sentCourseForm(CourseForm.$valid)" novalidate>
+                <%if(newCourseData.length!=0 ){%>
+                    <%newCourseData[0].courses.forEach(function(item){%>
+                    <div class="input-group course">
+                        <span class="input-group-addon contentTagName"><%=item.contentTagsTitle%></span>
+                        <input type="hidden" class="totalNum" value="<%=item.totalNum%>"/>
+                        <input type="number" class="form-control todayNum" placeholder="今日念诵"/>
+                        <span class="input-group-addon contentTagId" data-id="<%=item.contentTagsId%>">次数</span>
+                    </div>
+                    <%})%>
+                <%}else{%>
+                    <%tagsData.forEach(function(item){%>
+                    <div class="input-group course">
+                        <span class="input-group-addon contentTagName"><%=item.name%></span>
+                        <input type="hidden" class="totalNum" value="0">
+                        <input type="number" class="form-control todayNum" placeholder="今日念诵"/>
+                        <span class="input-group-addon contentTagId" data-id="<%=item._id%>">次数</span>
+                    </div>
+                    <%})%>
+                <%}%>
                 <textarea rows="3" placeholder="回向文" class="form-control" name="contents" id="msgTextArea" ng-model="CourseFormData.contents"  ng-minlength="10" ng-maxlength="500" required></textarea>
                 <label for="inputError" class="control-label text-danger" ng-show="CourseForm.content.$invalid && !CourseForm.content.$pristine"><i class="glyphicon glyphicon-info-sign"></i> 10-500个非特殊字符</label>
                 <p class="sent-btn">
@@ -39,9 +51,12 @@
                         var course = {
                             "contentTagsId":$(this).children(".contentTagId").attr("data-id"),
                             "contentTagsTitle":$(this).children(".contentTagName").text(),
-                            "todayNum":$(this).children(".todayNum").val()
+                            "todayNum":$(this).children(".todayNum").val(),
+                            "totalNum":parseInt($(this).children(".totalNum").val()) + parseInt($(this).children(".todayNum").val())
                         }
-                        courses.push(course);
+                      
+                        if($(this).children(".todayNum").val()!="")
+                            courses.push(course);
                     });
                     
                     $scope.CourseFormData.courses = JSON.stringify(courses);

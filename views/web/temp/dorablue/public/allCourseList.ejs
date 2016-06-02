@@ -1,0 +1,33 @@
+<div class="table-responsive">
+  <table class="table table-condensed">
+    <tr>
+        <th>日期</th>
+        <th>姓名</th>
+        <th>功课</th>
+        
+    </tr>
+    
+    
+    <%allNewCourseData.forEach(function(items){%>
+    <tr>
+        <td class=""><%=myDateFormat(items.date)%></td>
+        <td><%=items.authorName%></td>
+        <%items.courses.forEach(function(item){%>
+        <td>
+        <%=item.contentTagsTitle%><br/>
+        当日：<%=item.todayNum%><br/>
+        总计：<%=item.totalNum%>
+        </td>
+        <%})%>
+        <td class=" ">回向：<br/><%=items.contents%></td>
+    </tr>
+    <%})%>
+    
+  </table>
+</div>
+<script>
+    /*targetID:全局对应指定记录的标记，在修改和删除时使用*/
+
+
+
+</script>

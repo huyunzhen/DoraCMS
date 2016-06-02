@@ -114,7 +114,15 @@ var siteFunc = {
     getNewItemListData : function(q){
         return Content.find(q, 'stitle').sort({'date': -1}).skip(0).limit(10);
     },
-
+    
+    getNewCourseData : function(q){
+        return Course.find(q).sort({'date': -1}).skip(0).limit(1);
+    },
+    
+    getAllNewCourseData : function(){
+        return Course.find().sort({'date': -1}).skip(0).limit(10);
+    },
+    
     getRecommendListData : function(cateQuery,contentCount){
         return Content.find(cateQuery).sort({'date':-1}).skip(Math.floor(contentCount*Math.random())).limit(4);
     },
@@ -126,9 +134,7 @@ var siteFunc = {
     getMessageList : function(contentId){
         return Message.find({'contentId' : contentId}).sort({'date': 1}).populate('author').populate('replyAuthor').populate('adminAuthor').exec();
     },
-    getCourseList : function(){
-        return  Course.find().sort({'data':1});       
-    },
+ 
     sendSystemNoticeByType : function(req,res,type,value){
         var noticeObj;
         if(type == 'reg'){
@@ -205,7 +211,8 @@ var siteFunc = {
             pageType: 'cate',
             logined: isLogined(req),
             staticforder : staticforder,
-            layout: defaultTempPath
+            layout: defaultTempPath,
+            allNewCourseData: this.getAllNewCourseData()
         }
     },
 
@@ -311,7 +318,9 @@ var siteFunc = {
             userInfo: req.session.user,
             userCourseListData : documentList.docs,
             staticforder : staticforder,
-            layout: defaultTempPath
+            layout: defaultTempPath,
+            newCourseData: this.getNewCourseData({'authorId' :  req.session.user._id}),
+            pageInfo: documentList.pageInfo
         }
     },
     setDataForInfo : function(params, staticforder, defaultTempPath){

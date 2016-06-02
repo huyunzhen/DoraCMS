@@ -565,7 +565,7 @@ var returnUsersRouter = function(io) {
 
         var errors;
         var authorId = req.session.user._id;
-        var authorName = req.session.user.name;
+        var authorName = req.session.user.userName;
         var contents = req.body.contents;
         var courses = req.body.courses;
                
@@ -612,12 +612,6 @@ var returnUsersRouter = function(io) {
 // }]
 // })
     });
-    
-    //功课统计列表
-    router.get('/courseCount',function(req,res){
-        DbOpt.findAll(Course,req,res,"request course");      
-    });
-
 
 //-------------------------------------功课模块结束
 
