@@ -38,8 +38,12 @@
                 <% }else{ %>
                 <li class="dropdown ulogo">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <img src="<%=userInfo.logo%>" class="img-circle" alt="<%=userInfo.userName%>">
-                        </a>
+                        <button type="button" class="btn btn-warning ">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 设置
+                        </button>
+                        <!--<img src="<%=userInfo.logo%>" class="img-circle" alt="<%=userInfo.userName%>">
+                        -->    
+                    </a>
                     <ul class="dropdown-menu">
                         <li><a href="/users/userMessage">消息提醒&nbsp;<span class="badge" id="u_notify_num"><%=userInfo.msg_count%></span></a></li>
                         <li><a href="/users/userCourse">功课上报</a></li>
