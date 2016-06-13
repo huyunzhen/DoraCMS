@@ -16,7 +16,7 @@ var ContentTagsSchema = new Schema({
     name:  String,
     alias : String, //别名
     date: { type: Date, default: Date.now },
-    comments : String
+    comments : { type: String, default: 1 ,unique: true}
 });
 
 

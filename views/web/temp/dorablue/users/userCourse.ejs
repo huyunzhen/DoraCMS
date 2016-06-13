@@ -1,5 +1,10 @@
 <!--信息提示-->
 <div class="container" ng-app="webApp">
-    <% include ../public/courseBoard %>
-    <% include ../public/courseList %>
+    
+    <%if(newCourseData.length !=0 ){%>
+        <% include ../public/courseAdd %>
+    <%}else{%>
+        <% include ../public/courseBoard %>
+        <% include ../public/courseList %>
+     <%}%>
 </div>
