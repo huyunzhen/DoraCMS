@@ -569,9 +569,9 @@ var returnUsersRouter = function(io) {
         var contents = req.body.contents;
         var courses = req.body.courses;
                
-        if(!contents){
-            errors = settings.system_illegal_param;
-        }
+        // if(!contents){
+        //     errors = settings.system_illegal_param;
+        // }
         if(!authorId || !authorName){
             errors = settings.system_illegal_param;
         }       

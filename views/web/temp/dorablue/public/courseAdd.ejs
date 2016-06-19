@@ -1,7 +1,7 @@
-<div class="row" ng-controller="contentTags">
+<div id="courseAddWrapper" class="row" >
 <div class="col-xs-12">
     <div class="panel">
-        <a href="#addContentTags" role="button" class="btn btn-primary btn-sm" data-toggle="modal"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>增加新功课</a>
+        <a href="#addContentTags" role="button" class="btn btn-primary btn-sm" data-toggle="modal" id="course_commit"><span class="fa fa-plus-square" aria-hidden="true">&nbsp;</span>增加新功课</a>
         <div class="pull-right">
             <!--搜索框-->
             <form action="" name="searchForm" >
@@ -21,14 +21,13 @@
                 <tr>
                     <th><input type="checkbox" id="selectAll"/></th>
                     <th>编号</th>
-                    <th>功课名称</th>                    
-                 
+                    <th>功课名称</th>
                 </tr>
             </thead> 
             <tbody> 
                 <%tagsData.forEach(function(item){%>
                 <tr class="datalist">
-                    <td><input type="checkbox" name="listItem" class="mini" value="<%=item._id%>"/></td>
+                    <td><input type="checkbox" name="listItem" class="mini" value="<%=item._id%>" data-comments="<%=item.comments%>" data-name="<%=item.name%>"/></td>
                     <td class="sorting_1"><%=item.comments%></td>
                     <td class="sorting_1"><%=item.name%></td>  
                 <%})%>
@@ -69,12 +68,12 @@
                 <form role="form" class="form-horizontal" name="myForm" ng-submit="processForm(myForm.$valid)" novalidate>
                     <div class="form-group">
                         <label class="control-label col-sm-4">已经选择的课程名称：</label>
-                        <div class="col-sm-6" id="chooseCourse">
+                        <div class="col-sm-6" id="chooseCourse" style="padding:7px">'你还没有选择任何内容！'
                         </div>
                     </div>
                
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" ng-disabled="myForm.$invalid">提交</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="window.location.reload()">提交</button>
                     </div>
                 </form>
 
@@ -94,7 +93,24 @@
                     .filter(":contains('"+( $(this).val() )+"')") 
                     .show(); 
        }).keyup(); 
-       
+      
+       $("#course_commit").click(function(){
+            var chk_value = new Array(); 
+            var courses = "";
+            $('input[name="listItem"]:checked').each(function(){
+                var course = {
+                 //"courseId":$(this).val(),
+                    "courseName":$(this).attr("data-name"),
+                    "courseNum":$(this).attr("data-comments")
+                };
+                courses = courses + $(this).attr("data-name") + ";" ; 
+                chk_value.push(course); 
+            }); 
+            localStorage.setItem("course_data",JSON.stringify(chk_value));  
+            if(chk_value.length != 0){
+                $("#chooseCourse").html(courses);
+            }
+       }); 
     });
      
 </script>
