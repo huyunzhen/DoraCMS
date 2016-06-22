@@ -24,19 +24,13 @@
     
   </table>
  <%}%>
+ <% include pagination %>
 </div>
 <script>
     /*targetID:全局对应指定记录的标记，在修改和删除时使用*/
-<%if(newCourseData.length ==0 ){%>
-   
- var local_course1 = localStorage.getItem("course_data");
- console.log(local_course1)
-    if(local_course1 == null){
+<%if(newCourseData.length ==0 &&userCourseData.length==0 ){%>
         $("#courseBoardWrapper").hide();
         $("#courseListWrapper").hide();
-    }else{
-        $("#courseAddWrapper").hide();
-    }
 <%}else{%>
         $("#courseAddWrapper").hide();
 <%}%> 

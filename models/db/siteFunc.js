@@ -17,6 +17,7 @@ var Message = require("../Message");
 var settings = require("./settings");
 //课程对象
 var Course = require("../Course");
+var UserCourse = require("../UserCourse");
 //数据库操作对象
 var DbOpt = require("../Dbopt");
 //消息对象
@@ -119,8 +120,12 @@ var siteFunc = {
         return Course.find(q).sort({'date': -1}).skip(0).limit(1);
     },
     
+    getUserCourseData : function(q){
+        return UserCourse.find(q).sort({'date': -1}).skip(0).limit(1);
+    },
+    
     getAllNewCourseData : function(){
-        return Course.find().sort({'date': -1}).skip(0).limit(10);
+        return Course.find().sort({'date': -1}).skip(0).limit(100);
     },
     
     getRecommendListData : function(cateQuery,contentCount){
@@ -319,8 +324,10 @@ var siteFunc = {
             userCourseListData : documentList.docs,
             staticforder : staticforder,
             layout: defaultTempPath,
+            userCourseData: this.getUserCourseData({'userId' :  req.session.user._id}),
             newCourseData: this.getNewCourseData({'authorId' :  req.session.user._id}),
-            pageInfo: documentList.pageInfo
+            pageInfo: documentList.pageInfo,
+            pageType: 'courses'
         }
     },
     setDataForInfo : function(params, staticforder, defaultTempPath){

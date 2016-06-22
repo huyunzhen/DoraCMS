@@ -12,6 +12,7 @@ var AdminUser = require("../models/AdminUser");
 var Message = require("../models/Message");
 //功课实体类
 var Course = require("../models/Course");
+var UserCourse = require("../models/UserCourse");
 // 文档对象
 var Content = require("../models/Content");
 //数据库操作对象
@@ -612,7 +613,54 @@ var returnUsersRouter = function(io) {
 // }]
 // })
     });
+// 功课上报
+    router.post('/userCourse/setCourse', function(req, res, next) {
 
+        var errors;
+        var authorId = req.session.user._id;
+        var authorName = req.session.user.userName;
+        var courses = req.body.courses;
+        
+        if(!authorId || !authorName){
+            errors = settings.system_illegal_param;
+        }       
+        if(!courses){
+            errors = settings.system_illegal_param;
+        }
+        if(errors){
+            res.end(errors);
+        }else{
+            console.log(req.body);
+            var userCourse = new UserCourse({
+                userId:authorId,
+                userName:authorName,
+                courses:req.body.courses
+            });
+            userCourse.save(function(){
+                    res.end("success");
+                });
+        }
+    });
+    //  消息通知分页
+    router.get('/userCourse/:defaultUrl',function(req, res){
+        if(isLogined(req)){
+            var defaultUrl = req.params.defaultUrl;
+            var notifyUrl = defaultUrl.split('—')[0];
+            var replyPage = defaultUrl.split('—')[1];
+            if (notifyUrl == 'p') {
+                replyPage = defaultUrl.split('—')[1].split(".")[0];
+                if(replyPage && validator.isNumeric(replyPage)){
+                    req.query.page = replyPage;
+                }
+                siteFunc.renderToTargetPageByType(req,res,'userCourse',{title : '我的功课',page : 'userCourse'});
+            }else{
+                siteFunc.renderToTargetPageByType(req,res,'error',{info : '非法操作!',message :settings.system_illegal_param, page : 'do500'});
+            }
+        }
+        else{
+            siteFunc.renderToTargetPageByType(req,res,'user',{title : '用户登录',page : 'userLogin'});
+        }
+    });
 //-------------------------------------功课模块结束
 
 //-------------------------------------消息通知模块开始

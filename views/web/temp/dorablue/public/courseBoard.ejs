@@ -31,20 +31,20 @@
 </div>
 
 <script>
-   <%if(newCourseData.length ==0 ){%>
-    var local_course = localStorage.getItem("course_data");
-    if(local_course !=""){
-        var array_json_course = eval('(' + local_course + ')');
-        $(array_json_course).each(function(){ 
-            //alert(this.courseName+" "+this.courseNum); 
+   <%if(newCourseData.length ==0 &&userCourseData.length!=0){%>
+        var result ="<%=userCourseData[0].courses%>";
+        var array_json_course =  result.split(" ");
+        array_json_course.pop();
+        console.log(array_json_course);
+        $(array_json_course).each(function(n,value){ 
             $("#formAddCourse").prepend('<div class="input-group course">'+
-                '<span class="input-group-addon contentTagName">'+this.courseName+'</span>'+
+                '<span class="input-group-addon contentTagName">'+value+'</span>'+
                 '<input type="hidden" class="totalNum" value="0">'+
                 '<input type="number" class="form-control todayNum" placeholder="今日念诵"/>'+
-                '<span class="input-group-addon contentTagId" data-id="'+this.courseNum+'">次数</span>'+
+                '<span class="input-group-addon contentTagId">次数</span>'+
                '</div>');
-        });  
-    }
+            });  
+     
     <%}%>   
     
     var doraApp = angular.module("webApp",[]);
@@ -57,7 +57,6 @@
                     var courses = new Array();
                     $(".course").each(function(i){
                         var course = {
-                            "contentTagsId":$(this).children(".contentTagId").attr("data-id"),
                             "contentTagsTitle":$(this).children(".contentTagName").text(),
                             "todayNum":$(this).children(".todayNum").val(),
                             "totalNum":parseInt($(this).children(".totalNum").val()) + parseInt($(this).children(".todayNum").val())

@@ -73,7 +73,7 @@
                     </div>
                
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="window.location.reload()">提交</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="submitCourse">提交</button>
                     </div>
                 </form>
 
@@ -103,12 +103,18 @@
                     "courseName":$(this).attr("data-name"),
                     "courseNum":$(this).attr("data-comments")
                 };
-                courses = courses + $(this).attr("data-name") + ";" ; 
+                courses = courses + $(this).attr("data-name") + " " ; 
                 chk_value.push(course); 
             }); 
-            localStorage.setItem("course_data",JSON.stringify(chk_value));  
+          //  localStorage.setItem("course_data",JSON.stringify(chk_value));  
+           
             if(chk_value.length != 0){
                 $("#chooseCourse").html(courses);
+                 $('#submitCourse').on('click',function(){
+                    $.post("/users/userCourse/setCourse",{courses:courses},function(result){
+                            window.location.reload();
+                    });
+                 });
             }
        }); 
     });
